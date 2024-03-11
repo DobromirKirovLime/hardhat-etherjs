@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+const { KEY, NETWORK_URL } = require("./config");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -9,6 +10,13 @@ module.exports = {
         enabled: true,
         runs: 200,
       },
+    },
+  },
+  networks: {
+    hardhat: {},
+    sepolia: {
+      url: NETWORK_URL,
+      accounts: [KEY],
     },
   },
 };

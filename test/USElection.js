@@ -5,7 +5,7 @@ describe("USElections", function () {
   let usElection;
 
   before(async () => {
- 
+
     usElection = await ethers.deployContract("USElections");
     await usElection.waitForDeployment();
   });
@@ -49,6 +49,4 @@ describe("USElections", function () {
     expect(await usElection.currentLeader()).to.equal(2); // TRUMP
     expect(await usElection.electionEnded()).to.equal(true); // Ended
   });
-
-  
 });

@@ -18,6 +18,8 @@ contract Library is Ownable(msg.sender) {
     mapping(uint256 => Book) public books;
     mapping(address => CustomerCard) private customerRecord;
 
+    event Log(uint256[] test);
+
     function addBook(
         uint256 id,
         string memory name,
@@ -43,13 +45,51 @@ contract Library is Ownable(msg.sender) {
             books[id].copies >= 1,
             "There are no copies available right now."
         );
-        // Check for already taken book.
+
+        for (
+            uint256 i = 0;
+            i < customerRecord[msg.sender].bookIds.length;
+            i++
+        ) {
+            require(
+                customerRecord[msg.sender].bookIds[i] != id,
+                "You have already borrowed this book."
+            );
+        }
+
+        // Decrement available copies and record the book's ID
         books[id].copies -= 1;
         customerRecord[msg.sender].bookIds.push(id);
     }
 
     function returnBook(uint256 id) external {
-        // Check for already reterned book
+        require(
+            customerRecord[msg.sender].bookIds.length > 0,
+            "You have not borrowed any books."
+        );
+
+        require(id > 0, "You don't have this book!");
+
+        // Find the index of the book's ID in the customer's record
+        uint256 indexToDelete;
+        for (
+            uint256 i = 0;
+            i < customerRecord[msg.sender].bookIds.length;
+            i++
+        ) {
+            if (customerRecord[msg.sender].bookIds[i] == id) {
+                indexToDelete = i;
+                break;
+            }
+        }
+        require(indexToDelete > 0, "You have not borrowed this book.");
+
+        // Increment available copies and remove the book's ID from the customer's record
         books[id].copies += 1;
+        delete customerRecord[msg.sender].bookIds[indexToDelete];
+    }
+
+    function getCustomerRecord() external view returns (uint256[] memory) {
+        return customerRecord[msg.sender].bookIds;
     }
 }

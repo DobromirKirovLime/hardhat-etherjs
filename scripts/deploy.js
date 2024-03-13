@@ -5,6 +5,11 @@ async function main() {
   await USElection.waitForDeployment();
   const address = await USElection.getAddress();
   console.log("USElections deployed to:", address);
+
+  const Library = await hre.ethers.deployContract("Library");
+  await Library.waitForDeployment();
+  const address2 = await Library.getAddress();
+  console.log("Library deployed to:", address2);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
